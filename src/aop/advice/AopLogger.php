@@ -14,6 +14,8 @@ class AopLogger implements IAdvice {
 
     private $_timerToWarn = false;
 
+    private $_timerToError = false;
+
     public function __construct (array $options = array ()) {
         if (isset ($options['logger'])) {
             $this->_logger = $options['logger'];
@@ -34,6 +36,10 @@ class AopLogger implements IAdvice {
 
         if (isset ($options['timerToWarn'])) {
             $this->_timerToWarn = $options['timerToWarn'];
+        }
+
+        if (isset ($options['timerToError'])) {
+            $this->_timerToWarn = $options['timerToError'];
         }
     }
 
@@ -74,8 +80,9 @@ class AopLogger implements IAdvice {
             $log['return'] = $aop->getReturnedValue();
         }
         if ($this->_logger!=null) {
-
-            if ($this->_timerToWarn!==false && $time>$this->_timerToWarn) {
+            if ($this->_timerToError!==false && $time>$this->_timerToError) {
+                $this->_logger->addError($message,$log);
+            } else if ($this->_timerToWarn!==false && $time>$this->_timerToWarn) {
                 $this->_logger->addWarning($message,$log);
             } else {
                 $this->_logger->addInfo($message,$log);
