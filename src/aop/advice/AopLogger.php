@@ -12,6 +12,8 @@ class AopLogger implements IAdvice {
 
     private $_return = true;
 
+    private $_timerToWarn = false;
+
     public function __construct (array $options = array ()) {
         if (isset ($options['logger'])) {
             $this->_logger = $options['logger'];
@@ -28,6 +30,10 @@ class AopLogger implements IAdvice {
         }
         if (isset ($options['return'])) {
             $this->_return = $options['return'];
+        }
+
+        if (isset ($options['timerToWarn'])) {
+            $this->_timerToWarn = $options['timerToWarn'];
         }
     }
 
@@ -53,12 +59,28 @@ class AopLogger implements IAdvice {
         }
         if ($this->_args==null) {
             $log['args'] = $aop->getArguments();
+        } else {
+            $args = $aop->getArguments();
+            $log['args'] = array ();
+            foreach ($log['args'] as $arg) {
+                if (isset($args[$arg])) {
+                    $log['args'][$arg] = $args[$arg];
+                }
+            }
+
+
         }
         if ($this->_return) {
             $log['return'] = $aop->getReturnedValue();
         }
         if ($this->_logger!=null) {
-            $this->_logger->addInfo($message,$log);
+
+            if ($this->_timerToWarn!==false && $time>$this->_timerToWarn) {
+                $this->_logger->addWarning($message,$log);
+            } else {
+                $this->_logger->addInfo($message,$log);
+            }
+
         } else {
             echo $message." ".var_export($log, true);
         }
