@@ -1,0 +1,11 @@
+{
+    "name":"aop/aop",
+    "autoload": {
+        "psr-0":{
+            "aop":"src/"
+        }
+    },
+    "require":{
+        "ext-aop":"0.2.*"
+    }
+}
