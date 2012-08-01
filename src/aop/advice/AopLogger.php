@@ -39,7 +39,7 @@ class AopLogger implements IAdvice {
         }
 
         if (isset ($options['timerToError'])) {
-            $this->_timerToWarn = $options['timerToError'];
+            $this->_timerToError = $options['timerToError'];
         }
     }
 
